@@ -1,0 +1,267 @@
+﻿@using AviaSales.Models;
+@using Newtonsoft.Json;
+
+
+
+@page "/"
+
+<center>
+    <EditForm Model="client" class="divbackground">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div>
+            <input list="Countrylist" placeholder="Откуда" @bind-value="FromPlace" class="inputlist"> 
+            <datalist id="Countrylist">
+                @foreach (var item in countries)
+                {
+                    <option value="@item.Name.Common">@item.Name.Common</option>
+                }
+            </datalist>
+
+            <input list="Countrylist" class="secondinputinfofromplace" placeholder="Куда" 
+            @oninput="HandleInput">
+            <datalist id="Countrylist">
+                @foreach (var item in countries)
+                {
+                    <option value="@item.Name.Common">@item.Name.Common</option>
+                }
+            </datalist>
+
+            <InputDate id="date1" class="etcinputs" @bind-Value="dateStart" min="@DateTime.Today" />
+            <InputDate id="date2" class="etcinputs" @bind-Value="dateEnd" min="@DateTime.Today" />
+            <button @onclick="ToggleCounter" class="etcinputs">
+                Пассажиры: @totalCount
+            </button>
+
+            
+            <button type="submit" class="Sendbutton" @onclick="SendInfo">Найти Билеты</button>
+        </div>
+    </EditForm>
+</center>
+<center>
+    @if (showCounter)
+            {
+                <div class="counter-popup">
+                    <div>
+                        Взрослые: @adultCount
+                        <button @onclick="IncrementAdults">+</button>
+                        <button @onclick="DecrementAdults">-</button>
+                    </div>
+                    <div>
+                        Дети: @childCount
+                        <button @onclick="IncrementChildren">+</button>
+                        <button @onclick="DecrementChildren">-</button>
+                    </div>
+                </div>
+            }
+    @if (CurrentCapital != string.Empty)
+    {
+        @*<h1>That`s capital is @CurrentCapital</h1>
+        <h3>Next holiday is @holidayName in @holidayDate</h3>
+        <h3>The biggest holiday is @greaterholidayName in @greaterholidayDate</h3>*@
+        <article class="card">
+            <img class="card__background"
+             src="@UrlFlag"
+             alt="Photo of Cartagena's cathedral at the background and some colonial style houses"
+             width="1920"
+             height="2193" />
+            <div class="card__content | flow">
+                <div class="card__content--container | flow">
+                    <h2 class="card__title">@CurrentCapital</h2>
+                    <p class="card__description">
+                        @holidayName in @holidayDate
+                    </p>
+                </div>
+            </div>
+        </article>
+        <article class="card">
+            <img class="card__background"
+             src="@UrlFlag"
+             alt="Photo of Cartagena's cathedral at the background and some colonial style houses"
+             width="1920"
+             height="2193" />
+            <div class="card__content | flow">
+                <div class="card__content--container | flow">
+                    <h2 class="card__title">@greaterholidayName</h2>
+                    <p class="card__description">
+                        @greaterholidayDate
+                    </p>
+                </div>
+            </div>
+        </article>
+    }
+    else
+    {
+    <article class="card">
+      <img
+    class="card__background"
+    src="https://i.imgur.com/QYWAcXk.jpeg"
+    alt="Photo of Cartagena's cathedral at the background and some colonial style houses"
+    width="1920"
+    height="2193"
+  />
+      <div class="card__content | flow">
+        <div class="card__content--container | flow">
+          <h2 class="card__title">Colombia</h2>
+          <p class="card__description">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum in
+            labore laudantium deserunt fugiat numquam.
+          </p>
+        </div>
+      </div>
+    </article>
+    }
+</center>
+
+<div class="card-airplane">
+    <h3>Privet</h3>
+    <button>Kupit</button>
+</div>
+
+
+@code {
+    // Переменные
+    private string FromPlace = string.Empty;
+    private string ToPlace = string.Empty;
+    private string CurrentCapital = string.Empty;
+    private string UrlFlag = string.Empty;
+
+    private string holidayName = string.Empty;
+    private string holidayDate = string.Empty;
+
+    private string greaterholidayName = string.Empty;
+    private string greaterholidayDate = string.Empty;
+
+    private DateTime dateStart = DateTime.Today;
+    private DateTime dateEnd = DateTime.Today;
+    // Счетчик
+    private bool showCounter = false;
+    private int adultCount = 0;
+    private int childCount = 0;
+    // Страны и т.д
+    IEnumerable<Country> countries = RestCountriesService.GetAllCountries();
+
+
+    Client client = new Client();
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        ToPlace = e.Value.ToString();
+        GetCapital(ToPlace);
+    }
+
+    private async Task GetWeekendAndHolidays(int year, string countrycode)
+    {
+        using (var client = new HttpClient())
+        {
+            string url = $"https://date.nager.at/api/v3/PublicHolidays/{year}/{countrycode}";
+            var response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var holidays = JsonConvert.DeserializeObject<List<Holiday>>(json);
+
+                holidays.Sort((h1, h2) => h1.Date.CompareTo(h2.Date));
+
+                // Находим ближайший праздник после сегодняшней даты
+                var nearestHoliday = holidays.Find(h => h.Date >= DateTime.Now);
+                var greaterHoliday = holidays.Find(h => h.Date >= DateTime.Now.AddDays(7));
+
+                if (nearestHoliday != null)
+                {
+                    holidayName = nearestHoliday.Name;
+                    holidayDate = nearestHoliday.Date.ToShortDateString();
+                    if(greaterHoliday != null)
+                    {
+                        greaterholidayName = greaterHoliday.Name;
+                        greaterholidayDate = greaterHoliday.Date.ToShortDateString();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Нет ближайших праздников.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Failed to get holidays for {countrycode} in {year}. Status code: {response.StatusCode}");
+            }
+        }
+    }
+
+    private void GetCapital(string name)
+    {
+        try
+        {
+            if (name.Length > 4)
+            {
+                Country? country = RestCountriesService.GetCountryByFullName(name);
+                if(country.Cca2 != null)
+                {
+                    GetWeekendAndHolidays(2023, country.Cca2);
+                }
+                CurrentCapital = country.Capital[0];
+                UrlFlag = country.Flag.Png;
+
+            }
+            else
+            {
+                CurrentCapital = string.Empty;
+                UrlFlag = string.Empty;
+            }
+        }
+        catch
+        {
+
+        }
+    }
+
+    public void SendInfo()
+    {
+        // Всплывающее окно с регистрацией/входа
+
+
+    }
+
+    public class Client
+    {
+        public string FromPlace { get; set; }
+        public string ToPlace { get; set; }
+        public DateTime dateStart { get; set; }
+        public DateTime dateEnd { get; set; }
+        public int CountClients { get; set; }
+        public int ID { get; set; }
+    }
+    private void ToggleCounter()
+    {
+        showCounter = !showCounter;
+    }
+
+    private void IncrementAdults()
+    {
+        adultCount++;
+    }
+
+    private void DecrementAdults()
+    {
+        if (adultCount > 0)
+        {
+            adultCount--;
+        }
+    }
+
+    private void IncrementChildren()
+    {
+        childCount++;
+    }
+
+    private void DecrementChildren()
+    {
+        if (childCount > 0)
+        {
+            childCount--;
+        }
+    }
+
+    private int totalCount => adultCount + childCount;
+}
