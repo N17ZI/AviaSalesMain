@@ -5,6 +5,38 @@
     height: 50px;
     background-color: white;
 }
+.backgroundbodylogin {
+    background-image: url('../../Image/Airplaneback.png');
+    background-size: auto;
+    background-repeat: repeat-x;
+    vertical-align: bottom;
+    margin: 0px;
+}
+.formlogin {
+    background-color: gray;
+    height: 400px;
+    width: 400px;
+    margin-inline: auto;
+    border-radius: 20px;
+    border: groove;
+    border-color: black;
+    padding: 18px;
+}
+
+.formlogin input{
+    width:350px;
+    border-radius:5px;
+    height:50px;
+    padding:20px;
+    margin-top:20px;
+    margin-bottom:10px;
+}
+.formlogin button{
+    width:350px;
+    height:50px;
+    margin-top:10px;
+    border-radius:11px;
+}
 
 .card-airplane {
     height: 200px;
@@ -31,6 +63,11 @@
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+* {
+    margin:0;
+    padding:0;
 }
 
 
@@ -320,3 +357,18 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+.containers{
+    margin: 0px 166px;
+}
+.container {
+    max-width: 960px;
+    margin-top: 40px;
+}
+
+.list-unstyled li {
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}

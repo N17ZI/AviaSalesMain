@@ -1,48 +1,73 @@
 ﻿@page "/fetchdata"
 
-<PageTitle>Weather forecast</PageTitle>
+@inherits LayoutComponentBase
 
-@using AviaSales.Data
-@inject WeatherForecastService ForecastService
 
-<h1>Weather forecast</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<div class="container-fluid bg-dark text-white py-5">
+    <h1 class="display-4">Добро пожаловать на наш сайт авиакомпании</h1>
+    <p class="lead">Мы предлагаем широкий выбор рейсов по всему миру</p>
+    <hr class="my-4">
+    <p>Введите ваш город отправления, место назначения, дату вылета и дату прилета, чтобы найти лучшие цены на билеты:</p>
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" class="form-control mb-3" placeholder="Город отправления">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control mb-3" placeholder="Место назначения">
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control mb-3" placeholder="Дата вылета">
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control mb-3" placeholder="Дата прилета">
+        </div>
+        <div class="col-md-2">
+            <button class="btn">Найти билеты</button>
+        </div>
+    </div>
+</div>
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
+<style>
+    .btn {
+  display: inline-block;
+  background-color: #4CAF50;
+  width:200px;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+.btn:hover {
+  background-color: #3e8e41;
 }
-
-@code {
-    private WeatherForecast[]? forecasts;
-
-    protected override async Task OnInitializedAsync()
-    {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    *{
+  border: none;
+  outline: none;
     }
-}
+    .container-fluid {
+        background-image: url('https://img2.akspic.ru/crops/8/1/7/1/5/151718/151718-aviaciya-gorizont-sinij-aerokosmicheskaya_tehnika-cifrovoe_iskusstvo-3840x2160.jpg');
+        background-position: center center;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    
+
+    input[type="text"]::placeholder, input[type="date"]::placeholder {
+        color: black;
+    }
+    
+    hr {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+</style>
