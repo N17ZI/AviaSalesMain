@@ -1,0 +1,84 @@
+﻿@page "/ticketbuy"
+@using System.Collections.Generic
+
+    <h3>Выберите карточку:</h3>
+    @foreach (var card in CardList)
+    {
+        <div class="card @(card == SelectedCard ? "selected" : "")" @onclick="() => SelectCard(card)">
+        <h3>@card.Name ₽</h3>
+            <div class="Bagged">
+            <p>@card.Bag ₽</p>
+            </div>
+            <div class="Company">
+                <h4>@card.Company</h4>
+            </div>
+            <div class="rowh5">
+                <h5>@card.Time</h5>
+                <h5>@card.Time</h5>
+            </div>
+            <div class="codecountry">
+                <h5>@card.CodeCountry</h5>
+                <h5>@card.CodeCountry2</h5>
+            </div>
+            <div class="rowh5">
+                <h5>@card.Time</h5>
+                <h5>@card.Time</h5>
+            </div>
+            <div class="imgflag">
+                <img src="@UrlFlag"/>
+                <img src="@UrlFlag"/>
+            </div>
+            <div class="codecountry">
+                <h5>@card.CodeCountry2</h5>
+                <h5>@card.CodeCountry</h5>
+            </div>
+
+        </div>
+    }
+
+    @if (SelectedCard != null)
+    {
+        <h3>Выбранная карточка:</h3>
+        <div>
+            <center>
+            <h4>@SelectedCard.Name</h4>
+            <p>@SelectedCard.Bag</p>
+        </center>
+            
+        </div>
+    }
+
+
+
+
+@code {
+    public class CardModel
+    {
+        public string Name { get; set; }
+        public string Bag { get; set; }
+        public string Company { get; set; }
+        public string Time{ get; set; }
+        public string CodeCountry { get; set; }
+        public string CodeCountry2 { get; set; }
+    }
+    Country? country = RestCountriesService.GetCountryByFullName("Russia");
+
+    private List<CardModel> CardList { get; set; }
+    private CardModel SelectedCard { get; set; }
+    string UrlFlag;
+    protected override void OnInitialized()
+    {
+        UrlFlag = country.Flag.Png; ;
+        // Инициализация списка карточек
+        CardList = new List<CardModel>
+        {
+            new CardModel { Name = "19245", Bag = "С багажом +3254",Company = "АэроФлот",Time = "12:40",CodeCountry = "RU",CodeCountry2 = "AF" },
+            new CardModel { Name = "25545", Bag = "С багажом +3254",Company = $"Красный",Time = "12:40" }
+        };
+    }
+
+    private void SelectCard(CardModel card)
+    {
+        SelectedCard = card;
+    }
+}

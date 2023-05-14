@@ -11,22 +11,31 @@
     <p>Введите ваш город отправления, место назначения, дату вылета и дату прилета, чтобы найти лучшие цены на билеты:</p>
     <div class="row">
         <div class="col-md-3">
-            <input type="text" class="form-control mb-3" placeholder="Город отправления">
+            <input type="text" list="Countrylist" class="form-control mb-3" placeholder="Город отправления" required>
+                    <datalist id="Countrylist">
+                        @foreach (var item in countries)
+                        {
+                            var optionValue = $"{item.Name.Common}, {(item.Capital != null && item.Capital.Length > 0 ? item.Capital[0] : string.Empty)}";
+                            <option value="@optionValue">@item.Name.Common</option>
+                        }
+                    </datalist>
         </div>
         <div class="col-md-3">
-            <input type="text" class="form-control mb-3" placeholder="Место назначения">
+            <input type="text" list="Countrylist" class="form-control mb-3" placeholder="Место назначения" required>
         </div>
         <div class="col-md-2">
-            <input type="date" class="form-control mb-3" placeholder="Дата вылета">
+            <input type="date" class="form-control mb-3" placeholder="Дата вылета" required>
         </div>
         <div class="col-md-2">
-            <input type="date" class="form-control mb-3" placeholder="Дата прилета">
+            <input type="date" class="form-control mb-3" placeholder="Дата прилета"required >
         </div>
         <div class="col-md-2">
             <button class="btn">Найти билеты</button>
         </div>
     </div>
 </div>
+
+
 
 <style>
     .btn {
@@ -38,7 +47,8 @@
   font-size: 16px;
   border-radius: 4px;
   border: none;
-  cursor: pointer;
+    height: 38px;
+    cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -71,3 +81,10 @@
         border-color: rgba(255, 255, 255, 0.5);
     }
 </style>
+
+
+@code {
+    IEnumerable<Country> countries = RestCountriesService.GetAllCountries();
+
+
+}

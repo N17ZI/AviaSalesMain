@@ -1,8 +1,6 @@
 ﻿@using AviaSales.Models;
 @using Newtonsoft.Json;
 
-
-
 @page "/"
 
 <center>
@@ -11,19 +9,19 @@
         <ValidationSummary />
         <div>
             <input list="Countrylist" placeholder="Откуда" @bind-value="FromPlace" class="inputlist"> 
-            <datalist id="Countrylist">
-                @foreach (var item in countries)
-                {
-                    <option value="@item.Name.Common">@item.Name.Common</option>
-                }
-            </datalist>
-
             <input list="Countrylist" class="secondinputinfofromplace" placeholder="Куда" 
             @oninput="HandleInput">
+
             <datalist id="Countrylist">
                 @foreach (var item in countries)
                 {
-                    <option value="@item.Name.Common">@item.Name.Common</option>
+@*                    <option value="@((item.Capital != null && item.Capital.Length > 0) ? item.Capital[0] : string.Empty)" />*@
+                    @*<option value="@($"{item.Name.Common} {(item.Capital != null && item.Capital.Length > 0 ? item.Capital[0] : string.Empty)}")" />*@
+                    
+                    var optionValue = $"{item.Name.Common}, {(item.Capital != null && item.Capital.Length > 0 ? item.Capital[0] : string.Empty)}";
+                    <option value="@optionValue">@item.Name.Common</option>
+
+                   @* <option value="@($"{item.Name.Common} ({item.Capital})")">@item.Name.Common , @item.Capital</option>*@
                 }
             </datalist>
 
@@ -140,6 +138,7 @@
     private int childCount = 0;
     // Страны и т.д
     IEnumerable<Country> countries = RestCountriesService.GetAllCountries();
+
 
 
     Client client = new Client();
