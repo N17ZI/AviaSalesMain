@@ -107,9 +107,8 @@
 
     string GenerateRandomTime()
     {
-        Random random = new Random();
-        int hour = random.Next(24);
-        int minute = random.Next(60);
+        int hour = rnd.Next(24);
+        int minute = rnd.Next(60);
         string time = $"{hour:D2}:{minute:D2}";
 
         return time;

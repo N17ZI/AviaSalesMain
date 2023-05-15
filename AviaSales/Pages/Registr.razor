@@ -1,0 +1,53 @@
+﻿@page "/Reg"
+@using AviaDB
+@using AviaDB.Models
+@using AviaSales.Models;
+@using Azure
+@using DataAccessLibrary
+@inject IUserData _db
+
+<div class="RegForm">
+	<div class="">
+		<input placeholder="Login" @bind-value="Login" />
+		<input placeholder="Password" @bind-value="Password" />
+
+		<button class="" @onclick="CreateAcc">Create new account</button>
+	</div>
+</div>
+
+@code {
+	string Login = string.Empty;
+	string Password = string.Empty;
+
+	bool CanReg = false;
+
+	private List<UserModel> user;
+
+	protected override async Task OnInitializedAsync()
+	{
+		user = await _db.GetPeople();
+	}
+
+
+	private async void CreateAcc()
+	{
+		if (user.Where(x => x.Login == Login).Count() == 0)
+		{
+			CanReg = true;
+		}
+
+
+		UserModel pp = new UserModel
+			{
+				Login = Login,
+				Password = Password,
+				Role = "Client"
+			};
+		if (CanReg)
+		{
+			await _db.InsertPerson(pp);
+			NavigationManager.NavigateTo("/");
+			Infos.isLoged = true;
+		}
+	}
+}
