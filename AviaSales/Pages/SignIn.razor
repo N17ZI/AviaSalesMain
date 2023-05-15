@@ -26,12 +26,17 @@
 @code {
     string Login1 = "1";
     string Password = "1";
-    string Role = string.Empty;
+    string Role = "1";
     List<UserModel> user;
-
+    bool f = false;
     protected override async Task OnInitializedAsync()
     {
-        user = await _db.GetPeople();
+        if(f =false)
+        {
+            user = await _db.GetPeople();    
+        }
+
+
     }
 
     public void SignIn2()
@@ -40,7 +45,8 @@
         {
             if(item.Login == Login1 && item.Password == Password)
             {
-                NavigationManager.NavigateTo("test");
+                f = true;
+                NavigationManager.NavigateTo("/buying");
             }
         }
     }

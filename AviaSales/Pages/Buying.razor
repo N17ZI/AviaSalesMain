@@ -1,0 +1,112 @@
+﻿@page "/buying"
+<h1 class="text-center">Покупка билета</h1>
+<div class="passengers-form">
+    @foreach (var passenger in Passengers)
+    {
+        <h3>Пассажир @passenger.PassengerNumber</h3>
+        <div class="form-group">
+            <label for="name">Имя:</label>
+            <input type="text" class="form-control" id="name" @bind="@passenger.Name" />
+        </div>
+        <div class="form-group">
+            <label for="surname">Фамилия:</label>
+            <input type="text" class="form-control" id="surname" @bind="@passenger.Surname" />
+        </div>
+        <div class="form-group">
+            <label for="age">Дата рождения:</label>
+            <input type="date" class="form-control" id="age" @bind="@passenger.Age" />
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" class="form-control" id="email" @bind="@passenger.Email" />
+        </div>
+        <div class="form-group">
+            <label for="phone">Телефон:</label>
+            <input type="tel" class="form-control" id="phone" @bind="@passenger.Phone" />
+        </div>
+        <div class="form-group">
+            <label for="passport">Номер паспорта:</label>
+            <input type="text" class="form-control" id="passport" @bind="@passenger.Passport" />
+        </div>
+    }
+    <button class="btn btn-primary" @onclick="AddPassenger">Добавить пассажира</button>
+    <div class="text-absolute">
+    <label for="passport"> Стоимость:</label>
+    <label>00000</label>
+    </div>
+    <button class="btn btn-primary" @onclick="BuyingBilet">Купить</button>
+    
+   
+</div>
+<style>
+    .text-absolute{
+        position:absolute;
+    }
+    h1.text-center {
+        text-align: center;
+    }
+    .passengers-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5;}
+
+
+</style>
+@code {
+    private string? NameF;
+    private string? SurnameF;
+    private string? EmailF;
+    private string? PhoneF;
+    private string? PassportF;
+    private DateTime dateHappy;
+    private int Sum;
+    bool ErrorBuyingData = false;
+    protected override void OnInitialized()
+    {
+        
+    }
+    private class PassengerModel
+    {
+        public int PassengerNumber { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public DateTime Age { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Passport { get; set; }
+    }
+
+    private List<PassengerModel> Passengers = new List<PassengerModel>
+    {
+        new PassengerModel
+        {
+            PassengerNumber = 1,
+            Name = null,
+            Surname = null,
+            Age = DateTime.Now,
+            Email = null,
+            Phone = null,
+            Passport = null
+        }
+    };
+
+    private void AddPassenger()
+    {
+        Passengers.Add(new PassengerModel
+            {
+                PassengerNumber = Passengers.Count + 1
+            });
+    }
+    private void BuyingBilet()
+    {
+        
+    }
+}

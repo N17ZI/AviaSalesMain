@@ -20,4 +20,8 @@
     <ProjectReference Include="..\AviaDB\AviaDB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
