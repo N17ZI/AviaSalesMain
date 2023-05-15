@@ -1,11 +1,12 @@
 ﻿@page "/SignIn"
 @using AviaDB
 @using AviaDB.Models
+@using AviaSales.Data;
 @using AviaSales.Models;
 @using Azure
 @using DataAccessLibrary
 @inject IUserData _db
-
+@inject SingletonServices SingletonServices
 
 <div class="backgroundbodylogin">
     <center class="formlogin">
@@ -55,6 +56,8 @@
             if(item.Login == Login && item.Password == Password)
             {
                 Infos.LogedLogin = item.Login;
+                string LogedLogin = item.id_user.ToString();
+                SingletonServices.SetId(int.Parse(LogedLogin));
             }
         }
     }

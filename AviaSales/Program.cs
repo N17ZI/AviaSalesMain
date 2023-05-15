@@ -1,4 +1,5 @@
 using DataAccessLibrary;
+using AviaSales.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -9,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IUserData,UserData>();
+builder.Services.AddSingleton<SingletonServices>();
 
 var app = builder.Build();
 
