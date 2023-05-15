@@ -7,6 +7,7 @@
         public static DateTime startDate;
         public static DateTime endDate;
 
+        public static string LogedLogin;
         public static bool isLoged = false;
     }
 }

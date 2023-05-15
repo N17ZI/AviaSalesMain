@@ -41,6 +41,7 @@
 
     public void Sign()
     {
+        UserVerify();
         if (user.Any(x => x.Login == Login && x.Password == Password))
         {
             Infos.isLoged = true;
