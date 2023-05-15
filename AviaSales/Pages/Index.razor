@@ -1,7 +1,7 @@
 ﻿@using AviaSales.Models;
 @using Newtonsoft.Json;
 
-@page "/"
+@page "/test"
 
 <center>
     <EditForm Model="client" class="divbackground">
@@ -54,9 +54,6 @@
             }
     @if (CurrentCapital != string.Empty)
     {
-        @*<h1>That`s capital is @CurrentCapital</h1>
-        <h3>Next holiday is @holidayName in @holidayDate</h3>
-        <h3>The biggest holiday is @greaterholidayName in @greaterholidayDate</h3>*@
         <article class="card">
             <img class="card__background"
              src="@UrlFlag"
@@ -90,24 +87,7 @@
     }
     else
     {
-    <article class="card">
-      <img
-    class="card__background"
-    src="https://i.imgur.com/QYWAcXk.jpeg"
-    alt="Photo of Cartagena's cathedral at the background and some colonial style houses"
-    width="1920"
-    height="2193"
-  />
-      <div class="card__content | flow">
-        <div class="card__content--container | flow">
-          <h2 class="card__title">Colombia</h2>
-          <p class="card__description">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum in
-            labore laudantium deserunt fugiat numquam.
-          </p>
-        </div>
-      </div>
-    </article>
+    
     }
 </center>
 

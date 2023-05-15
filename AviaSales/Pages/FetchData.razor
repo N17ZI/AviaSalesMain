@@ -1,4 +1,6 @@
-﻿@page "/fetchdata"
+﻿@page "/"
+@using AviaSales.Models;
+@inject NavigationManager NavigationManager
 
 @inherits LayoutComponentBase
 
@@ -11,7 +13,7 @@
     <p>Введите ваш город отправления, место назначения, дату вылета и дату прилета, чтобы найти лучшие цены на билеты:</p>
     <div class="row">
         <div class="col-md-3">
-            <input type="text" list="Countrylist" class="form-control mb-3" placeholder="Город отправления" required>
+            <input type="text" @bind-value="PlaceFrom" list="Countrylist" class="form-control mb-3" placeholder="Город отправления" required>
                     <datalist id="Countrylist">
                         @foreach (var item in countries)
                         {
@@ -21,16 +23,16 @@
                     </datalist>
         </div>
         <div class="col-md-3">
-            <input type="text" list="Countrylist" class="form-control mb-3" placeholder="Место назначения" required>
+            <input type="text" list="Countrylist" @bind-value="PlaceTo" class="form-control mb-3" placeholder="Место назначения" required>
         </div>
         <div class="col-md-2">
-            <input type="date" class="form-control mb-3" placeholder="Дата вылета" required>
+            <input type="date" class="form-control mb-3" @bind-value="dateStart" placeholder="Дата вылета" required>
         </div>
         <div class="col-md-2">
-            <input type="date" class="form-control mb-3" placeholder="Дата прилета"required >
+            <input type="date" class="form-control mb-3" @bind-value="dateEnd" placeholder="Дата прилета"required >
         </div>
         <div class="col-md-2">
-            <button class="btn">Найти билеты</button>
+            <button class="btn" onclick="@FindTickets">Найти билеты</button>
         </div>
     </div>
 </div>
@@ -86,5 +88,21 @@
 @code {
     IEnumerable<Country> countries = RestCountriesService.GetAllCountries();
 
+    // From and To place
+    string PlaceFrom = string.Empty;
+    string PlaceTo = string.Empty;
+    // Time 
+    private DateTime dateStart = DateTime.Today;
+    private DateTime dateEnd = DateTime.Today;
 
+    private void FindTickets()
+    {
+        Infos.selectedcountryfrom = PlaceFrom;
+        Infos.selectedcountryto = PlaceTo;
+
+        if(Infos.selectedcountryto != string.Empty && Infos.selectedcountryto != string.Empty)
+        {
+            NavigationManager.NavigateTo("/ticketbuy");
+        }
+    }
 }

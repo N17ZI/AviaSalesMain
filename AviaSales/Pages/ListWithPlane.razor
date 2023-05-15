@@ -1,11 +1,13 @@
 ﻿@page "/ticketbuy"
 @using System.Collections.Generic
+@using AviaSales.Models;
+@inject NavigationManager NavigationManager
 
     <h3>Выберите карточку:</h3>
     @foreach (var card in CardList)
     {
         <div class="card @(card == SelectedCard ? "selected" : "")" @onclick="() => SelectCard(card)">
-        <h3>@card.Name ₽</h3>
+        <h3>@card.Summ ₽</h3>
             <div class="Bagged">
             <p>@card.Bag ₽</p>
             </div>
@@ -13,26 +15,25 @@
                 <h4>@card.Company</h4>
             </div>
             <div class="rowh5">
-                <h5>@card.Time</h5>
-                <h5>@card.Time</h5>
+                <h5>@card.TimeFrom</h5>
+                <h5>@card.TimeTo</h5>
             </div>
             <div class="codecountry">
                 <h5>@card.CodeCountry</h5>
                 <h5>@card.CodeCountry2</h5>
             </div>
             <div class="rowh5">
-                <h5>@card.Time</h5>
-                <h5>@card.Time</h5>
+                <h5>@card.TimeTo</h5>
+                <h5>@card.TimeFrom</h5>
             </div>
             <div class="imgflag">
                 <img src="@UrlFlag"/>
-                <img src="@UrlFlag"/>
+                <img src="@UrlFlag2"/>
             </div>
             <div class="codecountry">
                 <h5>@card.CodeCountry2</h5>
                 <h5>@card.CodeCountry</h5>
             </div>
-
         </div>
     }
 
@@ -41,7 +42,7 @@
         <h3>Выбранная карточка:</h3>
         <div>
             <center>
-            <h4>@SelectedCard.Name</h4>
+            <h4>@SelectedCard.Summ</h4>
             <p>@SelectedCard.Bag</p>
         </center>
             
@@ -54,31 +55,96 @@
 @code {
     public class CardModel
     {
-        public string Name { get; set; }
+        public string Summ { get; set; }
         public string Bag { get; set; }
         public string Company { get; set; }
-        public string Time{ get; set; }
+        public string TimeFrom{ get; set; }
+        public string TimeTo{ get; set; }
         public string CodeCountry { get; set; }
         public string CodeCountry2 { get; set; }
+        public string Class { get; set; }
+        public string FinalTimeInFly{ get; set; }
     }
-    Country? country = RestCountriesService.GetCountryByFullName("Russia");
-
+    string from = Infos.selectedcountryfrom;
+    string to = Infos.selectedcountryto;
+    //
     private List<CardModel> CardList { get; set; }
     private CardModel SelectedCard { get; set; }
-    string UrlFlag;
-    protected override void OnInitialized()
+    //
+    string UrlFlag = string.Empty;
+    string UrlFlag2 = string.Empty;
+    //
+    string Cca2from = string.Empty;
+    string Cca2to = string.Empty;
+    //
+    Random rnd = new Random();
+    //
+
+    protected override async Task OnInitializedAsync()
     {
-        UrlFlag = country.Flag.Png; ;
-        // Инициализация списка карточек
+        GetFlagCountries(from.Split(' ')[0].Trim(','), to.Split(' ')[0].Trim(','));
+        await FillModelList();
+    }
+
+    private async Task FillModelList()
+    {
+        string[] Class = new string[] { "Y", "C", "F" };
+
         CardList = new List<CardModel>
         {
-            new CardModel { Name = "19245", Bag = "С багажом +3254",Company = "АэроФлот",Time = "12:40",CodeCountry = "RU",CodeCountry2 = "AF" },
-            new CardModel { Name = "25545", Bag = "С багажом +3254",Company = $"Красный",Time = "12:40" }
+            new CardModel { Summ = rnd.Next(9999,35000).ToString(),
+                    Bag = rnd.Next(1,10000).ToString(),
+                    Company = "AirFlot",
+                    TimeFrom = GenerateRandomTime(),
+                    TimeTo = GenerateRandomTime(),
+                    CodeCountry = Cca2from,
+                    CodeCountry2 = Cca2to,
+                    FinalTimeInFly = "30 MIN",
+                    Class = $"{Class[rnd.Next(0,2)]}"}
         };
+    }
+
+
+    string GenerateRandomTime()
+    {
+        Random random = new Random();
+        int hour = random.Next(24);
+        int minute = random.Next(60);
+        string time = $"{hour:D2}:{minute:D2}";
+
+        return time;
+    }
+
+
+    private void GetFlagCountries(string countryfrom,string countryto)
+    {
+        try
+        {
+            Country? country = RestCountriesService.GetCountryByFullName(countryfrom);
+            Country? country2 = RestCountriesService.GetCountryByFullName(countryto);
+
+            GetAlphaCodeCountry((country.Cca2 != null && country.Cca2.Length > 0 ? country.Cca2 : "UN")
+            , (country2.Cca2 != null && country2.Cca2.Length > 0 ? country2.Cca2 : "UN"));
+
+            UrlFlag = country.Flag.Png;
+            UrlFlag2 = country2.Flag.Png;
+        }
+        catch
+        {
+            
+        }
+    }
+
+    private void GetAlphaCodeCountry(string countryfrom,string countryto)
+    {
+        Cca2from = countryfrom;
+        Cca2to = countryto;
     }
 
     private void SelectCard(CardModel card)
     {
         SelectedCard = card;
+        // Проверка авторизован ли пользователь
+        NavigationManager.NavigateTo("/ticketbuy/order");
     }
 }
